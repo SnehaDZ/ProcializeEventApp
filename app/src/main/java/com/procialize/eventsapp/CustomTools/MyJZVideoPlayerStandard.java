@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.procialize.eventsapp.R;
+
 import cn.jzvd.JZVideoPlayerStandard;
 
 /**
@@ -34,15 +36,15 @@ public class MyJZVideoPlayerStandard extends JZVideoPlayerStandard {
         try {
             super.onClick(v);
             int i = v.getId();
-            if (i == cn.jzvd.R.id.fullscreen) {
+            if (i == R.id.fullscreen) {
                 if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
                     //click quit fullscreen
                 } else {
                     //click goto fullscreen
                 }
-            } else if (i == cn.jzvd.R.id.back) {
+            } else if (i == R.id.back) {
                 MyJZVideoPlayerStandard.goOnPlayOnPause();
-            } else if (i == cn.jzvd.R.id.back_tiny) {
+            } else if (i == R.id.back_tiny) {
                 MyJZVideoPlayerStandard.goOnPlayOnPause();
             }
         } catch (Exception e) {
@@ -53,7 +55,7 @@ public class MyJZVideoPlayerStandard extends JZVideoPlayerStandard {
 
     @Override
     public int getLayoutId() {
-        return cn.jzvd.R.layout.jz_layout_standard;
+        return R.layout.video_layout_jzplayer;
     }
 
     @Override
