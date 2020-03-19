@@ -384,6 +384,7 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
                         opt = 0;
                     }
 
+
                     pagerAdapter.dataArray[pager.getCurrentItem()] = pagerAdapter.quizSpecificOptionListnew.get(opt).getOption();
                     pagerAdapter.checkArray[pager.getCurrentItem()] = pagerAdapter.quizSpecificOptionListnew.get(opt).getOption();
 
