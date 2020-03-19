@@ -1,0 +1,107 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/linear"
+    tools:context="com.procialize.eventsapp.Fragments.SpeakerFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/appBarLayout"
+        app:elevation="0dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colortoolbar"
+            android:elevation="@dimen/elevation"
+            android:contentInsetLeft="0dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            android:minHeight="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/headerlogoIv"
+                android:layout_marginLeft="-10dp"
+                android:layout_width="150dp"
+                android:contentDescription=" "
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                />
+
+        </android.support.v7.widget.Toolbar>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/linecolor"/>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <com.procialize.eventsapp.Fonts.RobotoTextview
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:padding="@dimen/padding"
+        android:textSize="10sp"
+        android:text="@string/refresh"
+        />
+
+    <com.procialize.eventsapp.Fonts.RobotoTextview
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/activetab"
+        android:gravity="center"
+        android:padding="@dimen/padding"
+        android:textSize="@dimen/textsizenormal"
+        android:text="@string/speaker"
+        />
+
+
+    <com.procialize.eventsapp.Fonts.RobotoTextInputEditext
+        android:background="@drawable/edittexthmbg"
+        android:id="@+id/searchEt"
+        android:layout_margin="10dp"
+        android:hint="@string/search_speaker_here"
+        android:textSize="@dimen/textsizesmall"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:imeOptions="actionDone"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="20dp"
+        android:layout_height="20dp" android:background="@drawable/loader"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/speakerfeedrefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/speakerrecycler"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</LinearLayout>

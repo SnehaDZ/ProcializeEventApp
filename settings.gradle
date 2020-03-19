@@ -1,0 +1,1 @@
+include ':app', ':mentions-release', ':tools-release', ':keyframe', ':album'

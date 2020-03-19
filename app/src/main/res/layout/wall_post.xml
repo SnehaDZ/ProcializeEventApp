@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/relative">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_uploading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="3dp"
+            android:gravity="center_horizontal"
+            android:text="Multimedia is uploading......"
+            android:visibility="gone" />
+
+
+        <com.procialize.eventsapp.Fonts.RobotoTextview
+            android:id="@+id/pullrefresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:alpha="0.8"
+            android:gravity="center"
+            android:text="Pull Down to Refresh"
+            android:textColor="@color/inactivetab"
+            android:textSize="10sp"
+            android:visibility="visible" />
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/newsfeedrefresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10">
+
+            <ListView
+                android:id="@+id/feedrecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:divider="@color/black"
+                android:dividerHeight="0px"
+                android:fadeScrollbars="false"
+                android:smoothScrollbar="true" />
+
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</RelativeLayout>

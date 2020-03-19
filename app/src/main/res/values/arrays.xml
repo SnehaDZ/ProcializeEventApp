@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="selectType">
+        <item>Select from Image Gallery</item>
+        <item>Cancel</item>
+    </string-array>
+
+
+
+
+</resources>
