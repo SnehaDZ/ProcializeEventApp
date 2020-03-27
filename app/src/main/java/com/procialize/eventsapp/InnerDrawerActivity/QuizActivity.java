@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.procialize.eventsapp.Activity.MainActivity;
 import com.procialize.eventsapp.Adapter.QuizPagerAdapter;
 import com.procialize.eventsapp.ApiConstant.ApiConstant;
+import com.procialize.eventsapp.CustomTools.CustomViewPager;
 import com.procialize.eventsapp.DbHelper.ConnectionDetector;
 import com.procialize.eventsapp.DbHelper.DBHelper;
 import com.procialize.eventsapp.GetterSetter.Quiz;
@@ -104,7 +105,7 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
     ImageView headerlogoIv;
     TextView questionTv, txt_time;
     public static TextView txt_count;
-    ViewPager pager;
+    CustomViewPager pager;
     //    QuizPagerAdapter pagerAdapter;
     LinearLayoutManager recyclerLayoutManager;
     String MY_PREFS_NAME = "ProcializeInfo";
@@ -142,6 +143,11 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
             public void onClick(View v) {
                 count = 1;
                 pagerAdapter.selectopt = 0;
+                try {
+                    timercountdown.cancel();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 //                submitflag = false;
 
 //                if (adapter.timer != null) {
@@ -388,14 +394,45 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
                     pagerAdapter.dataArray[pager.getCurrentItem()] = pagerAdapter.quizSpecificOptionListnew.get(opt).getOption();
                     pagerAdapter.checkArray[pager.getCurrentItem()] = pagerAdapter.quizSpecificOptionListnew.get(opt).getOption();
 
-                    btnNext.setVisibility(View.VISIBLE);
-                    submit.setVisibility(View.GONE);
+                    if (quizList.size() == pager.getCurrentItem() + 1) {
+                        btnNext.setVisibility(View.GONE);
+                        submit.setVisibility(View.VISIBLE);
+                    } else if (quizList.size() >= pager.getCurrentItem() + 1) {
+                        btnNext.setVisibility(View.VISIBLE);
+                        submit.setVisibility(View.GONE);
+                    }
+
 
                 } else {
                     if (submitflag != true) {
 //                        customHandler.removeCallbacks(updateTimerThread);
                         btnNext.setVisibility(View.VISIBLE);
                         submit.setVisibility(View.GONE);
+
+                        int opt = 1;
+                        if (pagerAdapter.quizSpecificOptionListnew.size() > 1) {
+                            pagerAdapter.selectedOption = pagerAdapter.quizSpecificOptionListnew.get(1).getOptionId();
+                        } else {
+                            pagerAdapter.selectedOption = pagerAdapter.quizSpecificOptionListnew.get(0).getOptionId();
+                        }
+
+
+                        if (pagerAdapter.quizSpecificOptionListnew.size() > 1) {
+                            if (pagerAdapter.selectedOption.equalsIgnoreCase(pagerAdapter.correctAnswer)) {
+                                pagerAdapter.selectopt = pagerAdapter.selectopt + 1;
+                                opt = 0;
+                            } else {
+                                pagerAdapter.selectopt = pagerAdapter.selectopt + 1;
+                                opt = 1;
+                            }
+                        } else {
+                            pagerAdapter.selectopt = 0;
+                            opt = 0;
+                        }
+
+
+                        pagerAdapter.dataArray[pager.getCurrentItem()] = pagerAdapter.quizSpecificOptionListnew.get(opt).getOption();
+                        pagerAdapter.checkArray[pager.getCurrentItem()] = pagerAdapter.quizSpecificOptionListnew.get(opt).getOption();
 
                         submitflag = true;
                         Boolean valid = true;
@@ -706,7 +743,7 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
 
             pagerAdapter = new QuizPagerAdapter(QuizActivity.this, quizList);
             pager.setAdapter(pagerAdapter);
-
+            pager.setPagingEnabled(false);
             if (quizList.size() > 1) {
                 btnNext.setVisibility(View.VISIBLE);
                 submit.setVisibility(View.GONE);
@@ -954,6 +991,12 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             timercountdown.cancel();
+            pagerAdapter.checkArray=null;
+            pagerAdapter.correctAnswer="";
+            pagerAdapter.selectedOption="";
+            pagerAdapter.dataArray=null;
+            pagerAdapter.dataIDArray=null;
+            pagerAdapter.ansArray=null;
             // Dismiss the progress dialog
             try {
                 if (pDialog != null) {
@@ -993,7 +1036,11 @@ public class QuizActivity extends AppCompatActivity implements OnClickListener {
         count1 = 1;
         pagerAdapter.selectopt = 0;
         submitflag = false;
-
+        try {
+            timercountdown.cancel();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Intent intent = new Intent(QuizActivity.this, FolderQuizActivity.class);
         startActivity(intent);

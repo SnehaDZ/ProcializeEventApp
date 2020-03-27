@@ -189,7 +189,7 @@ public class NewsfeedAdapter extends BaseAdapter {
             holder.viewtwo = convertView.findViewById(R.id.viewtwo);
 
             holder.txtfeedRv = convertView.findViewById(R.id.txtfeedRv);
-            holder.mindTv = convertView.findViewById(R.id.mindTv);
+//            holder.mindTv = convertView.findViewById(R.id.mindTv);
             holder.imagefeedRv = convertView.findViewById(R.id.imagefeedRv);
             holder.videofeedRv = convertView.findViewById(R.id.videofeedRv);
             holder.post_layout = convertView.findViewById(R.id.post_layout);
@@ -203,15 +203,15 @@ public class NewsfeedAdapter extends BaseAdapter {
 
 
             holder.profilestatus = convertView.findViewById(R.id.profilestatus);
+            if (feedLists.size() > 0) {
+                holder.feedll.setVisibility(RelativeLayout.VISIBLE);
 
-            if (profilepic != null) {
 
-                PicassoTrustAll.getInstance(context)
-                        .load(ApiConstant.profilepic + profilepic)
-                        .placeholder(R.drawable.profilepic_placeholder)
-                        .into(holder.profilestatus);
+            } else {
+                holder.feedll.setVisibility(RelativeLayout.GONE);
 
             }
+
 
 
             weightapply(holder.txtfeedRv, holder.imagefeedRv, holder.videofeedRv, holder.viewone, holder.viewteo);
@@ -227,14 +227,12 @@ public class NewsfeedAdapter extends BaseAdapter {
         if (position == 0) {
 
             if (value == true) {
-                if (topMgmtFlag.equalsIgnoreCase("1")) {
-                    holder.post_layout.setVisibility(RelativeLayout.VISIBLE);
+//                if (topMgmtFlag.equalsIgnoreCase("1")) {
+//                    holder.post_layout.setVisibility(RelativeLayout.VISIBLE);
+//                } else {
+//                    holder.post_layout.setVisibility(RelativeLayout.GONE);
+//                }
 
-                } else {
-                    holder.post_layout.setVisibility(RelativeLayout.GONE);
-
-                }
-                holder.feedll.setVisibility(RelativeLayout.VISIBLE);
 
                 holder.txtfeedRv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -246,36 +244,7 @@ public class NewsfeedAdapter extends BaseAdapter {
                     }
                 });
 
-                holder.mindTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        Intent postview = new Intent(context, PostActivity.class);
-                        postview.putExtra("for", "image");
-                        context.startActivity(postview);
-
-//                        if (holder.txtfeedRv.getVisibility() == View.VISIBLE) {
-//                            Intent postview = new Intent(context, PostViewActivity.class);
-//                            postview.putExtra("for", "text");
-//                            context.startActivity(postview);
-//                        } else if (holder.imagefeedRv.getVisibility() == View.VISIBLE) {
-//                            Intent postview = new Intent(context, PostActivity.class);
-//                            postview.putExtra("for", "image");
-//                            context.startActivity(postview);
-//                        } else if (holder.videofeedRv.getVisibility() == View.VISIBLE) {
-//                            if (device.equalsIgnoreCase("vivo V3")) {
-//                                Intent postview = new Intent(context, PostActivityVideo.class);
-//                                postview.putExtra("for", "video");
-//                                context.startActivity(postview);
-//                            } else {
-//                                Intent postview = new Intent(context, PostViewActivity.class);
-//                                postview.putExtra("for", "video");
-//                                context.startActivity(postview);
-//                            }
-//                        }
-//                getActivity().finish();
-                    }
-                });
 
                 holder.imagefeedRv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -305,14 +274,14 @@ public class NewsfeedAdapter extends BaseAdapter {
                     }
                 });
             } else {
-                if (topMgmtFlag.equalsIgnoreCase("1")) {
-                    holder.post_layout.setVisibility(RelativeLayout.VISIBLE);
+//                if (topMgmtFlag.equalsIgnoreCase("1")) {
+//                    holder.post_layout.setVisibility(RelativeLayout.VISIBLE);
+//
+//                } else {
+//                    holder.post_layout.setVisibility(RelativeLayout.VISIBLE);
+//
+//                }
 
-                } else {
-                    holder.post_layout.setVisibility(RelativeLayout.GONE);
-
-                }
-                holder.feedll.setVisibility(RelativeLayout.VISIBLE);
                 holder.txtfeedRv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -324,14 +293,7 @@ public class NewsfeedAdapter extends BaseAdapter {
                     }
                 });
 
-                holder.mindTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent postview = new Intent(context, PostActivity.class);
-                        postview.putExtra("for", "image");
-                        context.startActivity(postview);
-                    }
-                });
+
 
                 holder.imagefeedRv.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -361,7 +323,7 @@ public class NewsfeedAdapter extends BaseAdapter {
                 });
             }
         } else {
-            holder.post_layout.setVisibility(RelativeLayout.GONE);
+//            holder.post_layout.setVisibility(RelativeLayout.GONE);
         }
 
         holder.nameTv.setTextColor(Color.parseColor(colorActive));
@@ -831,10 +793,11 @@ public class NewsfeedAdapter extends BaseAdapter {
 
         if (news_feed_images.equalsIgnoreCase("0") && news_feed_post.equalsIgnoreCase("0") && news_feed_video.equalsIgnoreCase("0")) {
             holder.mainLLpost.setVisibility(View.GONE);
-            holder.mindTv.setVisibility(View.GONE);
+//            holder.mindTv.setVisibility(View.VISIBLE);
         } else {
+
             holder.mainLLpost.setVisibility(View.GONE);
-            holder.mindTv.setVisibility(View.VISIBLE);
+//            holder.mindTv.setVisibility(View.VISIBLE);
         }
 
         holder.feedimageIv.setOnClickListener(new View.OnClickListener() {
@@ -1118,7 +1081,7 @@ public class NewsfeedAdapter extends BaseAdapter {
         public ImageView playicon, moreIV, editIV;
         public View viewone, viewtwo, viewteo, view;
         RelativeLayout txtfeedRv, imagefeedRv, videofeedRv;
-        private LinearLayout likeTv, commentTv, shareTv, mindTv, mainLLpost, post_layout, feedll;
+        private LinearLayout likeTv, commentTv, shareTv,  mainLLpost, post_layout, feedll;
         public JZVideoPlayerStandard VideoView;
         FrameLayout root;
         public ClickableViewPager viewPager;

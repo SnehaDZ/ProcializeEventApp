@@ -260,6 +260,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String NEWS_FEED_ID = "NEWS_FEED_ID";
     public static final String IS_UPLOADED = "IS_UPLOADED";
     public static final String MULTIMEDIA_TYPE = "MULTIMEDIA_TYPE";
+    public static final String FOLDER_UNIQUE_ID = "FOLDER_UNIQUE_ID";
 
 
     public static final String BUZZ_MEDIA_TABLE_NAME = "BUZZ_MEDIA_TABLE_NAME";
@@ -420,12 +421,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 + EVENT_COUNTRY + " text, " + EVENT_LATITUDE + " text, " + EVENT_LONGITUDE + " text, " + LOGO + " text)");
 
 
+
         try {
             // UPLOAD Multimedia Table
-            db.execSQL("create table " + UPLOAD_MULTIMEDIA_TABLE + "(" + MULTIMEDIA_ID
-                    + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MULTIMEDIA_FILE + " text, " + MULTIMEDIA_THUMB + " text, " +
-                    MULTIMEDIA_COMPRESSED_FILE + " text, " + MULTIMEDIA_TYPE + " text, " + NEWS_FEED_ID
-                    + " text, " + IS_UPLOADED + " text)");
+            db.execSQL("create table " + UPLOAD_MULTIMEDIA_TABLE + "(" +
+                    MULTIMEDIA_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    MULTIMEDIA_FILE + " text, " +
+                    MULTIMEDIA_THUMB + " text, " +
+                    MULTIMEDIA_COMPRESSED_FILE + " text, " +
+                    MULTIMEDIA_TYPE + " text, " +
+                    NEWS_FEED_ID + " text, " +
+                    FOLDER_UNIQUE_ID + " text, " +
+                    IS_UPLOADED + " text)");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -437,6 +444,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + BUZZ_WIDTH + " text, "
                 + BUZZ_MEDIA_IMAGE + " blob, "
                 + BUZZ_HEIGHT + " text)");
+
     }
 
     @Override
@@ -1725,6 +1733,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 contentValues.put(IS_UPLOADED, "false");
                 contentValues.put(MULTIMEDIA_COMPRESSED_FILE, newsFeedPostMultimedia.get(i).getCompressedPath());
                 contentValues.put(MULTIMEDIA_TYPE, newsFeedPostMultimedia.get(i).getMedia_type());
+                contentValues.put(FOLDER_UNIQUE_ID, newsFeedPostMultimedia.get(i).getFolderUniqueId());
                 db.insert(UPLOAD_MULTIMEDIA_TABLE, null, contentValues);
             }
 
@@ -2425,6 +2434,23 @@ public class DBHelper extends SQLiteOpenHelper {
         return newsFeedList;
     }
 
+    public void updateNewsFeedId(String news_feed_id, String folderUniqueId, SQLiteDatabase db) {
+        if(!news_feed_id.equalsIgnoreCase("null")) {
+            db = this.getWritableDatabase();
+            db.beginTransaction();
+            try {
+                String sql = "UPDATE "+UPLOAD_MULTIMEDIA_TABLE+" set " + NEWS_FEED_ID + "='" + news_feed_id + "' where " + FOLDER_UNIQUE_ID + "='" + folderUniqueId + "'";
+                db.execSQL(sql);
+                db.setTransactionSuccessful();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                db.endTransaction();
+            }
+        }
+        return;
+    }
+
     public ArrayList<ExhibitorCatList> getCatList(String foldername) {
         String selectQuery = "select * from " + EXHIBITOR_CATEGORY_MASTER_LIST + " where " + EXHIBITOR_CATEGORY_ID + " LIKE \'%" + foldername + "%\'";
 
@@ -2487,7 +2513,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 newsFeedPostMultimedia.setCompressedPath(cursor.getString(3));
                 newsFeedPostMultimedia.setMedia_type(cursor.getString(4));
                 newsFeedPostMultimedia.setNews_feed_id(cursor.getString(5));
-                newsFeedPostMultimedia.setIs_uploaded(cursor.getString(6));
+                newsFeedPostMultimedia.setFolderUniqueId(cursor.getString(6));
+                newsFeedPostMultimedia.setIs_uploaded(cursor.getString(7));
 
                 newsFeedPostMultimediaList.add(newsFeedPostMultimedia);
             } while (cursor.moveToNext());
@@ -2506,15 +2533,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public int getCountOfUploadedMultiMediaForNewsFeedId(String news_feed_id) {
-        String selectQuery = "select * from " + UPLOAD_MULTIMEDIA_TABLE + " where IS_UPLOADED='false' and " + NEWS_FEED_ID + "='" + news_feed_id + "'";
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        int count = cursor.getCount();
-        db.close();
-        return count;
-    }
 
     public void updateMultimediaPath(String strPath, String compressedPath, String news_feed_id, SQLiteDatabase db) {
 
@@ -2533,7 +2552,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return;
     }
 
-    public void updateMultimediaInfo(String strPath, String news_feed_id, SQLiteDatabase db, String media_file_thumb) {
+    public void updateMultimediaInfo(String strPath, String news_feed_id, SQLiteDatabase db, String media_file_thumb, String folderUniqueId) {
 
         db = this.getWritableDatabase();
         db.beginTransaction();
@@ -2541,9 +2560,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
             String whereCondition;
             if (strPath.contains("mp4")) {
-                whereCondition = MULTIMEDIA_COMPRESSED_FILE + " ='" + strPath + "' AND " + NEWS_FEED_ID + "='" + news_feed_id + "'";
+                if (news_feed_id.isEmpty())
+                    whereCondition = MULTIMEDIA_COMPRESSED_FILE + " ='" + strPath + "' AND " + FOLDER_UNIQUE_ID + "='" + folderUniqueId + "'";
+                else
+                    whereCondition = MULTIMEDIA_COMPRESSED_FILE + " ='" + strPath + "' AND " + NEWS_FEED_ID + "='" + news_feed_id + "'";
             } else {
-                whereCondition = " MULTIMEDIA_FILE='" + strPath + "' AND NEWS_FEED_ID='" + news_feed_id + "'";
+                if (news_feed_id.isEmpty())
+                    whereCondition = " MULTIMEDIA_FILE='" + strPath + "' AND FOLDER_UNIQUE_ID='" + folderUniqueId + "'";
+                else
+                    whereCondition = " MULTIMEDIA_FILE='" + strPath + "' AND NEWS_FEED_ID='" + news_feed_id + "'";
             }
             String sql = "UPDATE TABLE_UPLOAD_MULTIMEDIA set IS_UPLOADED='true' where " + whereCondition;
             db.execSQL(sql);
@@ -2554,6 +2579,43 @@ public class DBHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
         return;
+    }
+
+    public String getNewsFeedIdFromFolderUniqueId(String folderUniqueId) {
+        String selectQuery = "select " + NEWS_FEED_ID + " from " + UPLOAD_MULTIMEDIA_TABLE + " where " + FOLDER_UNIQUE_ID + "='" + folderUniqueId + "'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        String news_feed_id = "";
+        if (cursor.moveToFirst()) {
+            do {
+                if (news_feed_id.isEmpty())
+                    news_feed_id = cursor.getString(0);
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        return news_feed_id;
+    }
+
+    public int getCountOfUploadedMultiMediaForNewsFeedId(String news_feed_id) {
+        String selectQuery = "select * from " + UPLOAD_MULTIMEDIA_TABLE + " where IS_UPLOADED='false' and " + NEWS_FEED_ID + "='" + news_feed_id + "'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        db.close();
+        return count;
+    }
+
+    public int getCountOfUploadedMultiMediaForFolderUniqueId(String folderUniqueId) {
+        String selectQuery = "select * from " + UPLOAD_MULTIMEDIA_TABLE + " where IS_UPLOADED='false' and " + FOLDER_UNIQUE_ID + "='" + folderUniqueId + "'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        db.close();
+        return count;
     }
 
     public List<news_feed_media> getBuzzMediaFeedDetails() {

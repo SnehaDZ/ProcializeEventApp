@@ -115,6 +115,7 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -202,6 +203,8 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
     LinearLayout sliderDotspanel;
     private ArrayList<AlbumFile> mAlbumFiles = new ArrayList<>();//Array For selected images and videos
     private static final String TAG = "VIDEO_COMPRESSION";
+    String folderUniqueId;
+    String news_feed_id1 = "";
 
     public static File createDirectoryAndSaveFile(Bitmap imageToSave) {
 
@@ -839,6 +842,7 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
                         "Select Image", Toast.LENGTH_SHORT)
                         .show();
             } else {*/
+            folderUniqueId = insertMultimediaDataToDB();
             if (cd.isConnectingToInternet()) {
 
                 if (actionFlag.equalsIgnoreCase("image")) {
@@ -2140,7 +2144,7 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
                  */
                 if (user != null) {
                     final Mention mention = new Mention();
-                    mention.setMentionName(user.getFirstName() + " " + user.getLastName() + " ");
+                    mention.setMentionName(user.getFirstName() + " " + user.getLastName());
                     mention.setMentionid(user.getAttendeeId());
                     mentions.insertMention(mention);
 
@@ -2203,22 +2207,21 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
             } else {
                 try {
                     sample = "<" + mentions.get(i).getMentionid() + "^" + mentions.get(i).getMentionName() + ">";
-                    spannable.setSpan(sample, mentions.get(i).getMentionOffset() + i + i * 6 + 1 - i, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i + i * 6 + 1 - i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spannable.replace(mentions.get(i).getMentionOffset() + i + i * 6 + 1 - i, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i + i * 6 + 1 - i + 1, sample);
+                    spannable.setSpan(sample, mentions.get(i).getMentionOffset() + i + i * 6, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i + i * 6, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.replace(mentions.get(i).getMentionOffset() + i + i * 6, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i + i * 6, sample);
 
 
                     commentTextView.setText(spannable, TextView.BufferType.SPANNABLE);
                 } catch (Exception e) {
                     sample = "<" + mentions.get(i).getMentionid() + "^" + mentions.get(i).getMentionName() + ">";
-                    spannable.setSpan(sample, mentions.get(i).getMentionOffset() + i + i * 6 - i, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i * 6 - i, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spannable.replace(mentions.get(i).getMentionOffset() + i + i * 6 - i, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i * 6 - i, sample);
+                    spannable.setSpan(sample, mentions.get(i).getMentionOffset() + i + i * 6, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i * 6 - i + i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.replace(mentions.get(i).getMentionOffset() + i + i * 6, mentions.get(i).getMentionOffset() + mentions.get(i).getMentionLength() + i * 6 - i + i + 1, sample);
 
 
                     commentTextView.setText(spannable, TextView.BufferType.SPANNABLE);
                 }
             }
         }
-
 
         return commentTextView.getText().toString();
     }
@@ -2283,9 +2286,9 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
                 builder.setType(MultipartBody.FORM);
                 builder.addFormDataPart("api_access_token", apikey);
                 builder.addFormDataPart("event_id", eventId);
-                builder.addFormDataPart("type", "image");
                 builder.addFormDataPart("status", StringEscapeUtils.escapeJava(postMsg));
                 builder.addFormDataPart("is_completed", is_completed);
+                builder.addFormDataPart("news_feed_id", news_feed_id1);
 
                 RequestBody requestBody = builder.build();
                 Request request = new Request.Builder()
@@ -2343,7 +2346,11 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
                                 picturePath = mAlbumFiles.get(i).getPath();
                                 videothumbpath = mAlbumFiles.get(i).getThumbPath();*/
 
-                    ArrayList<NewsFeedPostMultimedia> arrayListNewsFeedMultiMedia = new ArrayList<>();
+                   /* ArrayList<NewsFeedPostMultimedia> arrayListNewsFeedMultiMedia = new ArrayList<>();
+
+                    Date date= new Date();
+                    long time = date.getTime();
+                    Timestamp ts = new Timestamp(time);
                     for (int i = 0; i < resultList.size(); i++) {
                         picturePath = resultList.get(i).getmPath();
                         videothumbpath = resultList.get(i).getmThumbPath();
@@ -2353,55 +2360,66 @@ public class PostActivity extends AppCompatActivity implements OnClickListener, 
                         newsFeedPostMultimedia.setNews_feed_id(news_feed_id1);
                         newsFeedPostMultimedia.setCompressedPath("");
                         newsFeedPostMultimedia.setMedia_type(resultList.get(i).getmMediaType());
+                        newsFeedPostMultimedia.setFolderUniqueId(ts.toString());
                         arrayListNewsFeedMultiMedia.add(newsFeedPostMultimedia);
                     }
 
                     SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    dbHelper.insertUploadMultimediaInfo(arrayListNewsFeedMultiMedia, news_feed_id1, db);
-
+                    dbHelper.insertUploadMultimediaInfo(arrayListNewsFeedMultiMedia, news_feed_id1, db);*/
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    dbHelper.updateNewsFeedId(news_feed_id1, folderUniqueId, db);
                     Intent MainIntent = new Intent(PostActivity.this, HomeActivity.class);
                     startActivity(MainIntent);
                     finish();
+                    /*if (arrayListNewsFeedMultiMedia.size() > 0) {
+                        Intent intent = new Intent(PostNewActivity.this, BackgroundService.class);
+                        intent.putExtra("arrayListNewsFeedMultiMedia", arrayListNewsFeedMultiMedia);
+                        intent.putExtra("api_access_token", apikey);
+                        intent.putExtra("event_id", eventId);
+                        intent.putExtra("status", data);
+                        intent.putExtra("isNew", true);
+                        startService(intent);
+                    }*/
 
+                    /*}*/
+                    //uploadToServer(resultList.get(0));
                 } else {
+                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    dbHelper.updateNewsFeedId(news_feed_id1, folderUniqueId, db);
                     Intent MainIntent = new Intent(PostActivity.this, HomeActivity.class);
                     startActivity(MainIntent);
                     finish();
                 }
             } else {
-
-                if (resultList.size() >= 1) {
-                    Toast.makeText(PostActivity.this, message + " Your multimedia will be uploaded shortly..!", Toast.LENGTH_SHORT)
-                            .show();
-
-                    postbtn.setEnabled(false);
-                    postbtn.setClickable(false);
-                            /*for (int i = 0; i < mAlbumFiles.size(); i++) {
-                                picturePath = mAlbumFiles.get(i).getPath();
-                                videothumbpath = mAlbumFiles.get(i).getThumbPath();*/
-
-                    ArrayList<NewsFeedPostMultimedia> arrayListNewsFeedMultiMedia = new ArrayList<>();
-                    for (int i = 0; i < resultList.size(); i++) {
-                        picturePath = resultList.get(i).getmPath();
-                        videothumbpath = resultList.get(i).getmThumbPath();
-                        NewsFeedPostMultimedia newsFeedPostMultimedia = new NewsFeedPostMultimedia();
-                        newsFeedPostMultimedia.setMedia_file(picturePath);
-                        newsFeedPostMultimedia.setMedia_file_thumb(videothumbpath);
-                        newsFeedPostMultimedia.setNews_feed_id(news_feed_id1);
-                        newsFeedPostMultimedia.setCompressedPath("");
-                        newsFeedPostMultimedia.setMedia_type(resultList.get(i).getmMediaType());
-                        arrayListNewsFeedMultiMedia.add(newsFeedPostMultimedia);
-                    }
-
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    dbHelper.insertUploadMultimediaInfo(arrayListNewsFeedMultiMedia, news_feed_id1, db);
-
-                    Intent MainIntent = new Intent(PostActivity.this, HomeActivity.class);
-                    startActivity(MainIntent);
-                    finish();
-                }
-
+                Toast.makeText(PostActivity.this, message, Toast.LENGTH_SHORT)
+                        .show();
             }
         }
+    }
+
+    public String insertMultimediaDataToDB() {
+
+        ArrayList<NewsFeedPostMultimedia> arrayListNewsFeedMultiMedia = new ArrayList<>();
+
+        Date date = new Date();
+        long time = date.getTime();
+        Timestamp ts = new Timestamp(time);
+        for (int i = 0; i < resultList.size(); i++) {
+            picturePath = resultList.get(i).getmPath();
+            videothumbpath = resultList.get(i).getmThumbPath();
+            NewsFeedPostMultimedia newsFeedPostMultimedia = new NewsFeedPostMultimedia();
+            newsFeedPostMultimedia.setMedia_file(picturePath);
+            newsFeedPostMultimedia.setMedia_file_thumb(videothumbpath);
+            newsFeedPostMultimedia.setNews_feed_id(news_feed_id1);
+            newsFeedPostMultimedia.setCompressedPath("");
+            newsFeedPostMultimedia.setMedia_type(resultList.get(i).getmMediaType());
+            newsFeedPostMultimedia.setFolderUniqueId(ts.toString());
+            arrayListNewsFeedMultiMedia.add(newsFeedPostMultimedia);
+        }
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        dbHelper.insertUploadMultimediaInfo(arrayListNewsFeedMultiMedia, news_feed_id1, db);
+
+        return ts.toString();
     }
 }

@@ -125,6 +125,7 @@
                             android:textSize="@dimen/textsizenormal" />
             -->
             <LinearLayout
+                android:id="@+id/linear1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -191,14 +192,55 @@
             </LinearLayout>
 
 
+
         </RelativeLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/LinSelectorButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll"
+        android:orientation="horizontal">
 
+        <LinearLayout
+            android:id="@+id/imagefeedRv"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/login_btn_selected_bg"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imguploadimg"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:contentDescription="TODO"
+                android:padding="2dp"
+                android:src="@drawable/upload_icon" />
+
+            <TextView
+                android:id="@+id/txtUploadImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Upload Image/Video"
+                android:textColor="@color/black">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll"
+        android:layout_below="@+id/LinSelectorButton"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -290,7 +332,6 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone" />
-
 
 
 </RelativeLayout>

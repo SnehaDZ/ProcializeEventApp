@@ -166,6 +166,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     CardView card_view;
     LinearLayout ll_dots;
     ViewPager vp_slider;
+    ArrayList<news_feed_media> news_feed_media;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -729,17 +730,22 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
                 intent.putExtra("AspectRatio", p1);
                 intent.putExtra("noti_type", "Wall_Post");
 
-                if (type.equalsIgnoreCase("Image")) {
-                    intent.putExtra("url", feedurl);
-                } else if (type.equalsIgnoreCase("Gif")) {
-                    intent.putExtra("url", feedurl);
-                } else if (type.equalsIgnoreCase("Video")) {
-                    intent.putExtra("videourl", videourl);
-                    intent.putExtra("thumbImg", thumbImg);
+                news_feed_media = myList;
+                if (news_feed_media.size() >= 1) {
+                    intent.putExtra("media_list", (Serializable) news_feed_media);
+                } else if (news_feed_media.size() > 0) {
+                    intent.putExtra("type", news_feed_media.get(0).getMedia_type());
+                    if (news_feed_media.get(0).getMedia_type().equalsIgnoreCase("Image")) {
+                        intent.putExtra("url", ApiConstant.newsfeedwall + news_feed_media.get(0).getMediaFile());
+                    } else if (news_feed_media.get(0).getMedia_type().equalsIgnoreCase("Video")) {
+                        intent.putExtra("videourl", ApiConstant.newsfeedwall + news_feed_media.get(0).getMediaFile());
+                        intent.putExtra("thumbImg", ApiConstant.newsfeedwall + news_feed_media.get(0).getThumb_image());
+                    }
+                } else {
+                    intent.putExtra("type", "status");
                 }
                 intent.putExtra("flag", "noti");
                 startActivity(intent);
-
             }
         });
 
@@ -1797,8 +1803,7 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        Intent intent = new Intent(CommentActivity.this, HomeActivity.class);
-//        startActivity(intent);
+        JZVideoPlayerStandard.releaseAllVideos();
         finish();
     }
 
@@ -1949,5 +1954,11 @@ public class CommentActivity extends AppCompatActivity implements CommentAdapter
 
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayerStandard.releaseAllVideos();
     }
 }

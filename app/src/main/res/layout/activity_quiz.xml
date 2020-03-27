@@ -96,7 +96,7 @@
                 android:text=""
                 android:textColor="@color/black" />
 
-            <android.support.v4.view.ViewPager
+            <com.procialize.eventsapp.CustomTools.CustomViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -125,7 +125,6 @@
                 android:textSize="18sp"
                 android:visibility="gone" />
         </LinearLayout>
-
     </LinearLayout>
 
     <com.procialize.eventsapp.Fonts.RobotoButton
@@ -159,4 +158,5 @@
         android:textAllCaps="false"
         android:textColor="@color/colorwhite"
         android:visibility="gone" />
+
 </RelativeLayout>

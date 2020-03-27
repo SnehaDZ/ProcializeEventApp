@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,40 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <LinearLayout
-                android:id="@+id/mindTv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/pullrefresh"
-                android:layout_marginLeft="@dimen/margin"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginBottom="@dimen/margin"
-                android:background="@drawable/edittexthmbg"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.procialize.eventsapp.CustomTools.ScaledImageView
-                    android:id="@+id/profilestatus"
-                    android:layout_width="80px"
-                    android:layout_height="80px"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="5dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/profilepic_placeholder" />
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_vertical"
-                    android:hint="@string/whatsmind"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/textsizesmall" />
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/mainLLpost"
@@ -141,7 +108,8 @@
             android:layout_marginRight="12dp"
             android:layout_marginBottom="0dp"
             android:background="@drawable/newsfeedrowbg"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"

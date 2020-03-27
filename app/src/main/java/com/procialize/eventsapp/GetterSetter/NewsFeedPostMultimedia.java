@@ -4,12 +4,21 @@ import java.io.Serializable;
 
 public class NewsFeedPostMultimedia implements Serializable {
 
-    String media_file ;
-    String media_file_thumb ;
+    String media_file;
+    String media_file_thumb;
     String news_feed_id;
     String is_uploaded;
     String media_type;
     String compressedPath;
+    String folderUniqueId;
+
+    public String getFolderUniqueId() {
+        return folderUniqueId;
+    }
+
+    public void setFolderUniqueId(String folderUniqueId) {
+        this.folderUniqueId = folderUniqueId;
+    }
 
     public String getMedia_type() {
         return media_type;
@@ -27,20 +36,20 @@ public class NewsFeedPostMultimedia implements Serializable {
         this.compressedPath = compressedPath;
     }
 
-    public void setNews_feed_id(String news_feed_id) {
-        this.news_feed_id = news_feed_id;
-    }
-
-    public void setIs_uploaded(String is_uploaded) {
-        this.is_uploaded = is_uploaded;
-    }
-
     public String getNews_feed_id() {
         return news_feed_id;
     }
 
+    public void setNews_feed_id(String news_feed_id) {
+        this.news_feed_id = news_feed_id;
+    }
+
     public String getIs_uploaded() {
         return is_uploaded;
+    }
+
+    public void setIs_uploaded(String is_uploaded) {
+        this.is_uploaded = is_uploaded;
     }
 
     public String getMedia_file() {

@@ -21,48 +21,52 @@
         android:layout_margin="5dp"
         android:gravity="right" />
 
-    <LinearLayout
-        android:id="@+id/raiolayout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/raiolayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:orientation="vertical">
 
-            <com.procialize.eventsapp.Fonts.RobotoTextview
-                android:id="@+id/textno1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:textColor="@color/activetab"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/quiz_question"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
-                android:textStyle="bold" />
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
+                <com.procialize.eventsapp.Fonts.RobotoTextview
+                    android:id="@+id/textno1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:textColor="@color/activetab"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/quiz_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="vertical" />
         </LinearLayout>
-
-
-        <RadioGroup
-            android:id="@+id/radiogroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="vertical" />
-    </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>

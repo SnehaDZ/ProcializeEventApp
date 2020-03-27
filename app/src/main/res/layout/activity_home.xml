@@ -8,66 +8,116 @@
     android:fitsSystemWindows="true"
     tools:context=".Activity.HomeActivity">
 
-    <LinearLayout
-        android:id="@+id/linear"
+
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:weightSum="10">
+
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-
             app:elevation="0dp">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/main.collapsing"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colortoolbar"
-                android:contentInsetStart="0dp"
-                android:contentInsetLeft="0dp"
-                android:contentInsetEnd="0dp"
-                android:contentInsetRight="0dp"
-                android:minHeight="?attr/actionBarSize"
-                app:contentInsetEnd="0dp"
-                app:contentInsetLeft="0dp"
-                app:contentInsetRight="0dp"
-                app:contentInsetStart="0dp">
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginStart="48dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <ImageView
-                    android:id="@+id/headerlogoIv"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="-10dp"
-                    android:contentDescription=" " />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-            </android.support.v7.widget.Toolbar>
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@color/colortoolbar"
+                        android:contentInsetStart="0dp"
+                        android:contentInsetLeft="0dp"
+                        android:contentInsetEnd="0dp"
+                        android:contentInsetRight="0dp"
+                        android:minHeight="?attr/actionBarSize"
+                        app:contentInsetEnd="0dp"
+                        app:contentInsetLeft="0dp"
+                        app:contentInsetRight="0dp"
+                        app:contentInsetStart="0dp"
+                        app:layout_collapseMode="pin">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/linecolor"
-                android:visibility="gone" />
+                        <ImageView
+                            android:id="@+id/headerlogoIv"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="-10dp"
+                            android:contentDescription=" " />
+
+                    </android.support.v7.widget.Toolbar>
 
 
+                    <Button
+                        android:id="@+id/btn_livestreaming"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="#ff0000"
+                        android:text="Live Streaming ! Tap to view"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorwhite"
+                        android:textSize="@dimen/textsizesmall" />
+
+                    <!-- youtube thumbnail view to show the thumbnail of videos -->
+                    <LinearLayout
+                        android:id="@+id/linear_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fitsSystemWindows="true"
+                        android:visibility="gone"
+                        app:layout_collapseMode="parallax">
+
+                        <fragment
+                            android:id="@+id/youtube_player_fragment"
+                            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/linecolor"
+                    android:visibility="gone" />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
+
 
         <com.procialize.eventsapp.CustomTools.CustomViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_above="@+id/tabs"
-            android:layout_weight="9"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_weight="9">
+
+        </com.procialize.eventsapp.CustomTools.CustomViewPager>
+
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appTab"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="70dp"
             android:layout_gravity="bottom"
             android:layout_weight="1">
 
@@ -80,11 +130,8 @@
                 app:tabGravity="fill"
                 app:tabMode="fixed"
                 app:tabTextAppearance="@style/MyCustomTabText" />
-
         </android.support.design.widget.AppBarLayout>
-
-
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 
     <!--
@@ -224,8 +271,7 @@
                     android:paddingBottom="10dp"
                     android:text="Notifications"
                     android:textColor="@color/colorwhite"
-                    android:textSize="@dimen/textsizesmall"
-                    />
+                    android:textSize="@dimen/textsizesmall" />
 
                 <com.procialize.eventsapp.Fonts.RobotoTextview
                     android:id="@+id/exh_analytics"
@@ -346,6 +392,7 @@
                     android:textSize="@dimen/textsizesmall" />
 
                 <com.procialize.eventsapp.Fonts.RobotoTextview
+                    android:id="@+id/txt_version"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/logout"
@@ -355,8 +402,7 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:textColor="@color/colorwhite"
-                    android:textSize="@dimen/textsizesmall"
-                    android:id="@+id/txt_version"/>
+                    android:textSize="@dimen/textsizesmall" />
 
 
             </RelativeLayout>

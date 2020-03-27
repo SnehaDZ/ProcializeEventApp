@@ -31,6 +31,7 @@ import com.procialize.eventsapp.GetterSetter.EventListing;
 import com.procialize.eventsapp.GetterSetter.Forgot;
 import com.procialize.eventsapp.R;
 
+import cn.jzvd.JZVideoPlayerStandard;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -413,6 +414,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        JZVideoPlayerStandard.releaseAllVideos();
+        ActivityCompat.finishAffinity(LoginActivity.this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayerStandard.releaseAllVideos();
     }
 }

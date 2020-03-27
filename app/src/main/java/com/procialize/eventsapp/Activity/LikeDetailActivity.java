@@ -430,12 +430,9 @@ public class LikeDetailActivity extends AppCompatActivity {
                 final ImageView[] ivArrayDotsPager;
                 for (int i = 0; i < myList.size(); i++) {
                     imagesSelectednew.add(ApiConstant.newsfeedwall + myList.get(i).getMediaFile());
-                    if(myList.get(i).getMediaFile().contains("mp4"))
-                    {
+                    if (myList.get(i).getMediaFile().contains("mp4")) {
                         imagesSelectednew1.add(ApiConstant.newsfeedwall + myList.get(i).getThumb_image());
-                    }
-                    else
-                    {
+                    } else {
                         imagesSelectednew1.add("");
                     }
                 }
@@ -490,7 +487,7 @@ public class LikeDetailActivity extends AppCompatActivity {
                 feedprogress.setVisibility(View.GONE);
             }
 
-        }else if (type.equals("Gif")) {
+        } else if (type.equals("Gif")) {
             //photo
 
             if (feedurl != null) {
@@ -501,7 +498,7 @@ public class LikeDetailActivity extends AppCompatActivity {
                 Glide.with(videoplayer).load(feedurl).into(feedimageIv);
 
             }
-        }  else if (type.equals("Video")) {
+        } else if (type.equals("Video")) {
             //video
 
             if (videourl != null) {
@@ -605,5 +602,17 @@ public class LikeDetailActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JZVideoPlayerStandard.releaseAllVideos();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        JZVideoPlayerStandard.releaseAllVideos();
     }
 }

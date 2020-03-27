@@ -54,6 +54,7 @@ import com.procialize.eventsapp.Activity.CommentActivity;
 import com.procialize.eventsapp.Activity.ImageViewActivity;
 import com.procialize.eventsapp.Activity.LikeDetailActivity;
 import com.procialize.eventsapp.Activity.LoginActivity;
+import com.procialize.eventsapp.Activity.PostActivity;
 import com.procialize.eventsapp.Activity.PostEditActivity;
 import com.procialize.eventsapp.Activity.PostEditActivityOld;
 import com.procialize.eventsapp.Adapter.LikeAdapter;
@@ -63,6 +64,7 @@ import com.procialize.eventsapp.ApiConstant.ApiConstant;
 import com.procialize.eventsapp.ApiConstant.ApiUtils;
 import com.procialize.eventsapp.Background.BackgroundService;
 import com.procialize.eventsapp.CustomTools.MyJZVideoPlayerStandard;
+import com.procialize.eventsapp.CustomTools.PicassoTrustAll;
 import com.procialize.eventsapp.DbHelper.ConnectionDetector;
 import com.procialize.eventsapp.DbHelper.DBHelper;
 import com.procialize.eventsapp.GetterSetter.Analytic;
@@ -125,6 +127,7 @@ public class WallFragment_POST extends Fragment implements NewsfeedAdapter.FeedA
     String token, LIST_INSTANCE_STATE;
     HashMap<String, String> user;
     BottomSheetDialog dialog;
+    ImageView profilestatus;
     Dialog myDialog;
     String MY_PREFS_NAME = "ProcializeInfo";
     String eventid;
@@ -279,9 +282,18 @@ public class WallFragment_POST extends Fragment implements NewsfeedAdapter.FeedA
         relative = view.findViewById(R.id.relative);
         pullrefresh = view.findViewById(R.id.pullrefresh);
         tv_uploading = view.findViewById(R.id.tv_uploading);
+        mindTv = view.findViewById(R.id.mindTv);
+        profilestatus = view.findViewById(R.id.profilestatus);
 //        feedrecycler.setHasFixedSize(true);
 //        feedrecycler.setNestedScrollingEnabled(false);
+        if (profilepic != null) {
 
+            PicassoTrustAll.getInstance(getActivity())
+                    .load(ApiConstant.profilepic + profilepic)
+                    .placeholder(R.drawable.profilepic_placeholder)
+                    .into(profilestatus);
+
+        }
         pullrefresh.setTextColor(Color.parseColor(colorActive));
         int resId = R.anim.layout_animation_slide_right;
         animation = AnimationUtils.loadLayoutAnimation(getContext(), resId);
@@ -508,6 +520,15 @@ public class WallFragment_POST extends Fragment implements NewsfeedAdapter.FeedA
                 }
             }
         }
+
+        mindTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent postview = new Intent(getActivity(), PostActivity.class);
+                postview.putExtra("for", "image");
+                startActivity(postview);
+            }
+        });
 
         return view;
 
@@ -1162,12 +1183,13 @@ public class WallFragment_POST extends Fragment implements NewsfeedAdapter.FeedA
 //        }
 
         if (newsfeedsDBList.size() == 0) {
-            NewsFeedList newsFeedList = new NewsFeedList();
-            newsfeedsDBList.add(newsFeedList);
+//            NewsFeedList newsFeedList = new NewsFeedList();
+//            newsfeedsDBList.add(newsFeedList);
             //buzzDBAdapter = new BuzzDBAdapter(getActivity(), newsfeedsDBList, BuzzFragment.this, false);
             setAdapter(newsfeedsDBList);
         } else {
-
+            NewsFeedList newsFeedList = new NewsFeedList();
+            newsfeedsDBList.add(newsFeedList);
             setAdapter(newsfeedsDBList);
 
         }

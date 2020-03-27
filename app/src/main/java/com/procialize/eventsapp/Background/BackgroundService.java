@@ -11,9 +11,6 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
-
-
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
 import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
@@ -21,11 +18,8 @@ import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunnin
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 import com.procialize.eventsapp.ApiConstant.ApiConstant;
 import com.procialize.eventsapp.DbHelper.DBHelper;
-import com.procialize.eventsapp.GetterSetter.NewsFeedList;
 import com.procialize.eventsapp.GetterSetter.NewsFeedPostMultimedia;
 import com.procialize.eventsapp.GetterSetter.news_feed_media;
-
-
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -51,8 +45,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-import static com.procialize.eventsapp.UnsafeOkHttpClient.getUnsafeOkHttpClient;
 import static com.procialize.eventsapp.Activity.PostActivity.transformResponse;
+import static com.procialize.eventsapp.UnsafeOkHttpClient.getUnsafeOkHttpClient;
 
 
 public class BackgroundService extends IntentService {
@@ -74,13 +68,16 @@ public class BackgroundService extends IntentService {
     int endMsForVideoCutting = 120000;//End TIme for cutting video
     String TAG = "BackgroundService";
     Thread thread;
-//    List<news_feed_media> news_feed_mediaDB = new ArrayList<news_feed_media>();
+    List<news_feed_media> news_feed_mediaDB = new ArrayList<news_feed_media>();
+    String is_completed = "0";
+    String news_feed_id1;
     private String media_file, media_file_thumb, api_access_token, event_id, status;
     private DBHelper dbHelper;
     private ArrayList<NewsFeedPostMultimedia> arrayListNewsFeedMultiMedia;
     private FFmpeg ffmpeg;
     private DBHelper procializeDB;
     private SQLiteDatabase db;
+
 
     public BackgroundService() {
         super("");
@@ -93,7 +90,7 @@ public class BackgroundService extends IntentService {
         procializeDB = new DBHelper(getApplicationContext());
         db = procializeDB.getWritableDatabase();
 
-        arrayListNewsFeedMultiMedia = (ArrayList<NewsFeedPostMultimedia>) intent.getSerializableExtra("arrayListNewsFeedMultiMedia");
+        arrayListNewsFeedMultiMedia = ( ArrayList<NewsFeedPostMultimedia> ) intent.getSerializableExtra("arrayListNewsFeedMultiMedia");
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
@@ -124,21 +121,18 @@ public class BackgroundService extends IntentService {
                     } else {
                         media_file = arrayListNewsFeedMultiMedia.get(0).getMedia_file();
                         media_file_thumb = arrayListNewsFeedMultiMedia.get(0).getMedia_file_thumb();
-                        uploadToServer(media_file, media_file_thumb, arrayListNewsFeedMultiMedia.get(0).getNews_feed_id());
+                        uploadToServer(media_file, media_file_thumb, arrayListNewsFeedMultiMedia.get(0).getFolderUniqueId());
                     }
                 } else {
                     media_file = arrayListNewsFeedMultiMedia.get(0).getMedia_file();
                     media_file_thumb = arrayListNewsFeedMultiMedia.get(0).getMedia_file_thumb();
-                    uploadToServer(media_file, media_file_thumb, arrayListNewsFeedMultiMedia.get(0).getNews_feed_id());
+                    uploadToServer(media_file, media_file_thumb, arrayListNewsFeedMultiMedia.get(0).getFolderUniqueId());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        if (!isIntentServiceRunning) {
-            isIntentServiceRunning = true;
-        }
     }
 
     /**
@@ -263,6 +257,8 @@ public class BackgroundService extends IntentService {
                                 else
                                     media_file = arrayListNewsFeedMultiMedia.get(0).getMedia_file();
 
+
+
                                 media_file_thumb = arrayListNewsFeedMultiMedia.get(0).getMedia_file_thumb();
                             }
                         } else {
@@ -274,7 +270,7 @@ public class BackgroundService extends IntentService {
                             @Override
                             public void run() {
                                 try {
-                                    uploadToServer(media_file, media_file_thumb, arrayListNewsFeedMultiMedia.get(0).getNews_feed_id());
+                                    uploadToServer(media_file, media_file_thumb, arrayListNewsFeedMultiMedia.get(0).getFolderUniqueId());
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -353,14 +349,11 @@ public class BackgroundService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         isIntentServiceRunning = false;
-        if(dbHelper.getCountOfNotUploadedMultiMedia()==0)
-        {
-            File dir = new File(Environment.getExternalStorageDirectory()+"AlbumCache");
-            if (dir.isDirectory())
-            {
+        if (dbHelper.getCountOfNotUploadedMultiMedia() == 0) {
+            File dir = new File(Environment.getExternalStorageDirectory() + "AlbumCache");
+            if (dir.isDirectory()) {
                 String[] children = dir.list();
-                for (int i = 0; i < children.length; i++)
-                {
+                for (int i = 0; i < children.length; i++) {
                     new File(dir, children[i]).delete();
                 }
             }
@@ -372,17 +365,26 @@ public class BackgroundService extends IntentService {
                 Toast.LENGTH_LONG).show();*/
 
 
-
-        Intent broadcastIntent = new Intent(ApiConstant.BROADCAST_ACTION);
+       /* Intent broadcastIntent = new Intent(Constants.BROADCAST_ACTION);
         // Attaching data to the intent
         //broadcastIntent.putExtra(Constants.EXTRA_CAPITAL, capital);
         // Sending the broadcast
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);*/
 
 
     }
 
-    public void uploadToServer(String media_file, String media_file_thumb, String news_feed_id) {
+    public void uploadToServer(String media_file, String media_file_thumb, String folderUniqueId) {
+
+        //int countOfUploadedFilesForPerticularNewsFeedId = dbHelper.getCountOfUploadedMultiMediaForNewsFeedId(news_feed_id);
+        int countOfUploadedFilesForPerticularNewsFeedId = dbHelper.getCountOfUploadedMultiMediaForFolderUniqueId(folderUniqueId);
+        String news_feed_id = dbHelper.getNewsFeedIdFromFolderUniqueId(folderUniqueId);
+        if (countOfUploadedFilesForPerticularNewsFeedId == 1) {
+            is_completed = "1";
+        } else {
+            is_completed = "0";
+        }
+
 
         File file = new File(media_file);
         if (media_file.contains("mp4")) {
@@ -428,7 +430,7 @@ public class BackgroundService extends IntentService {
         OkHttpClient client = null;
         try {
             URL url = new URL(ApiConstant.baseUrl + "PostNewsFeedMultiple");//"PostNewsFeedMultiple");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = ( HttpURLConnection ) url.openConnection();
             conn.setConnectTimeout(7000);
             client = getUnsafeOkHttpClient().newBuilder().build();
         } catch (Exception e) {
@@ -452,6 +454,7 @@ public class BackgroundService extends IntentService {
 
         builder.addFormDataPart("news_feed_id", news_feed_id);
         builder.addFormDataPart("status", status);
+        builder.addFormDataPart("is_completed", is_completed);
         // builder.addFormDataPart("isDebug", "1");
 
         RequestBody requestBody = builder.build();
@@ -463,7 +466,6 @@ public class BackgroundService extends IntentService {
 
         HttpEntity httpEntity = null;
         okhttp3.Response response = null;
-
 
         try {
             response = client.newCall(request).execute();
@@ -484,34 +486,41 @@ public class BackgroundService extends IntentService {
 
         try {
             json = new JSONObject(result);
+            Log.d("response", result);
             try {
                 error = json.getString("status");
                 message = json.getString("msg");
-                //news_feed_id = json.getString("news_feed_id");
+                news_feed_id1 = json.getString("news_feed_id");
+
+
 
                 if (error.equalsIgnoreCase("success")) {
                     dbHelper.getReadableDatabase();
                     SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    dbHelper.updateMultimediaInfo(media_file, news_feed_id, db, media_file_thumb);
+                    dbHelper.updateNewsFeedId(news_feed_id1, folderUniqueId, db);
+                    dbHelper.updateMultimediaInfo(media_file, news_feed_id1, db, media_file_thumb, folderUniqueId);
                     message = json.getString("msg");
                     getFileToUpload();
                 } else {
                     dbHelper.getReadableDatabase();
                     SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    dbHelper.updateMultimediaInfo(media_file, news_feed_id, db, media_file_thumb);
+                    dbHelper.updateNewsFeedId(news_feed_id1, folderUniqueId, db);
+                    dbHelper.updateMultimediaInfo(media_file, news_feed_id1, db, media_file_thumb, folderUniqueId);
                     getFileToUpload();
                 }
             } catch (Exception e) {
                 dbHelper.getReadableDatabase();
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                dbHelper.updateMultimediaInfo(media_file, news_feed_id, db, media_file_thumb);
+                dbHelper.updateNewsFeedId(news_feed_id1, folderUniqueId, db);
+                dbHelper.updateMultimediaInfo(media_file, news_feed_id1, db, media_file_thumb, folderUniqueId);
                 Log.e("JSON Parser", "Error parsing data " + e.toString());
                 getFileToUpload();
             }
         } catch (JSONException e) {
             dbHelper.getReadableDatabase();
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            dbHelper.updateMultimediaInfo(media_file, news_feed_id, db, media_file_thumb);
+            dbHelper.updateNewsFeedId(news_feed_id1, folderUniqueId, db);
+            dbHelper.updateMultimediaInfo(media_file, news_feed_id1, db, media_file_thumb, folderUniqueId);
             Log.e("JSON Parser", "Error parsing data " + e.toString());
             getFileToUpload();
         }
@@ -542,20 +551,21 @@ public class BackgroundService extends IntentService {
             String media_file1 = "";
             String media_file_thumb1 = arrayListNewsFeedMultiMedia.get(successfullUploadedMediaCount).getMedia_file_thumb();
             String news_feed_id = arrayListNewsFeedMultiMedia.get(successfullUploadedMediaCount).getNews_feed_id();
+            String folderUniqueId = arrayListNewsFeedMultiMedia.get(successfullUploadedMediaCount).getFolderUniqueId();
 
             if (arrayListNewsFeedMultiMedia.get(successfullUploadedMediaCount).getMedia_type().equalsIgnoreCase("video"))
                 media_file1 = arrayListNewsFeedMultiMedia.get(successfullUploadedMediaCount).getCompressedPath();
             else
                 media_file1 = arrayListNewsFeedMultiMedia.get(successfullUploadedMediaCount).getMedia_file();
 
-            uploadToServer(media_file1, media_file_thumb1, news_feed_id);
+            uploadToServer(media_file1, media_file_thumb1, folderUniqueId);
         } else {
             // Creating an intent for broadcastreceiver
-           /* Intent broadcastIntent = new Intent(Constants.BROADCAST_ACTION);
+            Intent broadcastIntent = new Intent(ApiConstant.BROADCAST_ACTION);
             // Attaching data to the intent
             //broadcastIntent.putExtra(Constants.EXTRA_CAPITAL, capital);
             // Sending the broadcast
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);*/
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(broadcastIntent);
         }
     }
 }

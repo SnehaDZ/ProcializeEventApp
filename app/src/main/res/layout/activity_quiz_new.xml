@@ -54,64 +54,67 @@
 
         </android.support.design.widget.AppBarLayout>
 
-
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="9"
-            android:gravity="top"
-            android:orientation="vertical">
+            android:layout_weight="9">
 
-            <TextView
-                android:id="@+id/questionTv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="General Knowledge"
-                android:textColor="@color/colorwhite"
-                android:textSize="16dp" />
-
-            <TextView
-                android:id="@+id/txt_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end" />
-
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone" />
+                android:layout_margin="5dp"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/questionTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="General Knowledge"
+                    android:textColor="@color/colorwhite"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/txt_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" />
 
 
-            <com.procialize.eventsapp.CustomTools.NoScrollRecycler
-                android:id="@+id/quiz_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:descendantFocusability="beforeDescendants"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="5dp"
-                android:isScrollContainer="false"
-                android:orientation="horizontal"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
 
-            <com.procialize.eventsapp.Fonts.RobotoTextview
-                android:id="@android:id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center|center_horizontal"
-                android:text="No active quiz"
-                android:textColor="@color/colorwhite"
-                android:textSize="18sp"
-                android:visibility="gone" />
-        </LinearLayout>
 
+                <com.procialize.eventsapp.CustomTools.NoScrollRecycler
+                    android:id="@+id/quiz_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:descendantFocusability="beforeDescendants"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="5dp"
+                    android:isScrollContainer="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+                <com.procialize.eventsapp.Fonts.RobotoTextview
+                    android:id="@android:id/empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center|center_horizontal"
+                    android:text="No active quiz"
+                    android:textColor="@color/colorwhite"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 
     <com.procialize.eventsapp.Fonts.RobotoButton
